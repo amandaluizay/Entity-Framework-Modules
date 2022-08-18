@@ -1,29 +1,63 @@
 ﻿using System;
 using Blog.Data;
 using Blog.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace Blog {
     class program{
         static void Main(string[] args){
-            using(var context= new BlogDataContext()){
-                
-                //create
-                /* var tag = new Tag {Name="ASP.NET", Slug="aspnet"};
-                context.Tags.Add(tag);
-                context.SaveChanges(); */
+            using var context= new BlogDataContext();
 
-               // Delete
-                /* var tag = context.Tags.FirstOrDefault(x=> x.Id == 1);
-                context.Remove(tag);
-                context.SaveChanges(); */
+            /* var user = new User{
+                Name="amanda",
+                Slug="amandaluiza",
+                Email= "amanda@luiza",
+                Bio = "estudante",
+                Image = "https",
+                PasswordHash="55466"
+            };
 
-                var tags = context.Tags.ToList();
+            var category = new Category{
+                Name = "backend",
+                Slug = "back"
+            };
 
-                foreach (var tag in tags)
-                {
-                    Console.WriteLine(tag.Name);
-                }
-            }
+            var post = new Post
+             {
+                Author = user,
+                Category = category,
+                Body = "<p>Hello world</p>",
+                Slug = "comecando-com-ef-core",
+                Summary = "Neste artigo vamos aprender EF core",
+                Title = "Começando com EF Core",
+                CreateDate = DateTime.Now,
+                LastUpdateDate = DateTime.Now,
+             };
+
+             context.Posts.Add(post);
+             context.SaveChanges(); */
+
+             /*var posts = context
+                .Posts
+                .AsNoTracking()
+                .Include(x=> x.Author)
+                .Where(x=> x.AuthorId == 3)
+                .OrderByDescending(x=>x.LastUpdateDate)
+                .ToList();
+
+            foreach(var post in posts){
+                Console.WriteLine($"{post.Title} escrito por {post.Author?.Name}");
+            } */
+
+            var post = context
+            .Posts
+            .Include(x=>x.Author)
+            .Include(x=>x.Category)
+            .OrderBy(x=>x.LastUpdateDate)
+            .FirstOrDefault();
+
+            post.Author.Name = "Teste";
+            context.SaveChanges();
 
         }
     }
